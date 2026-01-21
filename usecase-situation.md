@@ -1,3 +1,22 @@
+
+- [Boundless Books — Performance-Critical Digital Content Delivery](#boundless-books--performance-critical-digital-content-delivery)
+  - [Situation](#situation)
+  - [Business problem](#business-problem)
+  - [Pain points: declining print revenue in a digital-first market](#pain-points-declining-print-revenue-in-a-digital-first-market)
+  - [Non-functional requirements (NFRs)](#non-functional-requirements-nfrs)
+    - [Performance](#performance)
+    - [Scalability](#scalability)
+    - [Availability \& resilience](#availability--resilience)
+    - [Security \& DRM](#security--drm)
+    - [Cost efficiency](#cost-efficiency)
+    - [Interoperability](#interoperability)
+    - [Observability](#observability)
+    - [Maintainability](#maintainability)
+    - [ADR-001: Consider an architectural pattern for high‑performance content distribution solution](#adr-001-consider-an-architectural-pattern-for-highperformance-content-distribution-solution)
+  - [Stakeholders and impact](#stakeholders-and-impact)
+  - [Success metrics (Phase 1)](#success-metrics-phase-1)
+  - [Constraints](#constraints)
+
 # Boundless Books — Performance-Critical Digital Content Delivery 
 
 - **Date:** 2026-01-21
