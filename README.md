@@ -55,7 +55,7 @@ Key challenge: meeting strict performance constraints:
 #### Context
 Boundless Books needs fast, secure, cost‑controlled delivery of digital assets at global scale. The distribution layer must be independent of legacy systems while supporting modern DRM and AI‑enabled operations.
 
-### Option 1: Adopt AWS S3 + CloudFront as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata.
+### Chosen Option (Option 1): Adopt AWS S3 + CloudFront as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata.
 
 ```mermaid
 flowchart LR
