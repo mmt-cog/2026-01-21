@@ -110,7 +110,8 @@ flowchart LR
 
 ---
 
-### Option 2. CloudFront + S3 + Serverless Entitlement (Chosen)
+## Considered options
+### Option 1. CloudFront + S3 + Serverless Entitlement (Chosen)
 **Strengths:**
 - Best global latency & burst performance  
 - Excellent cache offload  
