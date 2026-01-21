@@ -68,7 +68,8 @@ Without a modern digital delivery tier, the organization cannot reliably meet gl
 - Safe deploy strategies (e.g., blue/green) and schema-versioned content
 
 
-### ADR in a business statement insted of a technical form as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata
+### ADR-001: Consider an architectural pattern for high‑performance content distribution solution
+
 
 
 ## Stakeholders and impact
