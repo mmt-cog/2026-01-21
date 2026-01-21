@@ -1,182 +1,152 @@
 
-# Boundless Books – Performance-Critical Architecture Decision (AWS)
-*A proposal‑ready architecture decision slice based on the case study.*
+# Boundless Books – Performance‑Critical Architecture Decision (AWS)
+*A proposal‑ready architecture decision slice with diagrams.*
 
 ---
 
 ## 1. Performance‑Critical Problem
 
-Boundless Books must deliver **global, low‑latency digital content (e‑books, interactive media, DRM‑protected assets)** to B2C and B2B channels while legacy systems remain operational.  
-Key challenge: meeting strict performance constraints:
+Boundless Books must deliver **global, low‑latency digital content** (e‑books, interactive media, DRM‑protected assets) to B2C and B2B channels while legacy systems remain operational.
 
-- **p95 ≤ 200 ms globally**  
-- **10× burst scaling within 5 minutes**  
+### Performance Constraints
+- **p95 ≤ 200 ms** globally  
+- **10× burst scaling** within 5 minutes  
 - **99.95% availability**  
-- High egress volumes with tight cost constraints  
+- Cost optimization required for high‑egress content
 
 ---
 
 ## 2. Key Non‑Functional Requirements (NFRs)
 
-### Performance
-- Sub‑200 ms global read latency  
-- Near‑instant elasticity to absorb 10× spikes  
-- Efficient caching/offloading of origins
-
-### Availability & Resilience
-- 99.95% availability  
-- Multi‑Region failover capability  
-- Graceful degradation under load
-
-### Security & DRM
-- Device‑bound, expiring signed URLs  
-- Token‑based entitlement checks  
-- Anomaly detection for abuse/scraping
-
-### Cost Efficiency
-- Strict egress cost optimization  
-- Intelligent storage class transitions  
-- High cache hit ratios to protect budget
-
-### Interoperability
-- Must operate **concurrently** with legacy editorial and distribution systems
-
-### Observability
-- SLO dashboards  
-- Tracing across CDN → API → datastore  
-- Automated operational insights
+### NFR Overview Diagram
+```mermaid
+mindmap
+  root((NFRs))
+    Performance
+      "Global p95 200ms"
+      "10x burst / 5min"
+    Availability
+      "99.95% SLO"
+      "Multi‑Region resilience"
+    Security & DRM
+      "Signed URLs"
+      "Anomaly detection"
+      "Token-based entitlements"
+    Cost Efficiency
+      "Egress optimization"
+      "Storage tiering"
+    Interoperability
+      "Coexist with legacy"
+    Observability
+      "SLO dashboards"
+      "Tracing"
+      "Automated insights"
+```
 
 ---
 
 ## 3. Key Architecture Decision (ADR)
 
-### ADR‑001: Adopt AWS S3 + CloudFront as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata.
+### ADR‑001: Use S3 + CloudFront for global content distribution with serverless entitlements and DynamoDB Global Tables.
 
-#### Context
-Boundless Books needs fast, secure, cost‑controlled delivery of digital assets at global scale. The distribution layer must be independent of legacy systems while supporting modern DRM and AI‑enabled operations.
+### High‑Level Architecture (Mermaid Diagram)
+```mermaid
+flowchart LR
+    subgraph Client["Global Users (B2C & B2B)"]
+        A["Web/Mobile/E‑Readers"]
+    end
 
-#### Decision
-- Use **Amazon CloudFront** with **Signed URLs/Cookies**, **Origin Shield**, and **edge functions** for lightweight token validation.  
-- Store digital content in **Amazon S3**, with cross‑Region replication.  
-- Build entitlement/DRM APIs with **API Gateway + AWS Lambda**.  
-- Use **DynamoDB Global Tables** for globally distributed entitlement metadata.  
-- Identity handled through **Amazon Cognito** (B2C) + **SAML/OIDC federation** (B2B).  
-- **EventBridge** drives predictive autoscaling and operational workflows.  
-- Observability using **CloudWatch**, **X‑Ray**, **AWS Budgets**, and **Cost Anomaly Detection**.
+    A --> CF["CloudFront CDN"]
+    CF --> EDGE["Lambda@Edge / CloudFront Functions<br/>Token Validation, DRM Enforcement"]
 
-#### Status
-**Approved** for implementation in Phase 1 (digital delivery tier).
+    EDGE --> OS["Origin Shield"]
+    OS --> S3["S3 Buckets<br/>(Cross‑Region Replication)"]
 
-#### Consequences
-- **Pros:**  
-  - Edge caching achieves sub‑200 ms latency  
-  - Highly elastic with minimal ops overhead  
-  - Strong, scalable DRM model  
-  - Cost‑efficient for high-read workloads  
-- **Cons:**  
-  - Complex token lifecycle  
-  - DRM logic at the edge must remain lightweight  
-  - Egress remains a cost-sensitive dimension
+    A --> API["API Gateway"]
+    API --> L["Lambda Entitlement Service"]
+    L --> DDB["DynamoDB Global Tables<br/>Entitlements / Metadata"]
+
+    subgraph Observability
+        CW["CloudWatch Metrics & Logs"]
+        XR["X‑Ray Tracing"]
+        CAD["Cost Anomaly Detection"]
+    end
+
+    CF -.-> CW
+    L -.-> CW
+    API -.-> XR
+```
 
 ---
 
 ## 4. Architectural Alternatives & Trade‑offs
 
-### A. CloudFront + S3 + Serverless Entitlement (Chosen)
-**Strengths:**
-- Best global latency & burst performance  
-- Excellent cache offload  
-- Low operational overhead  
-- Flexible DRM patterns
+### Alternatives Comparison Diagram
+```mermaid
+graph TD
+    A["CloudFront + S3 + Serverless Entitlement (Chosen)"]
+    B["Multi‑Region ECS/EKS Delivery"]
+    C["DynamoDB Global Tables + Pre‑Signed URLs"]
+    D["Real‑Time DRM Transformation Gateway"]
 
-**Weaknesses:**
-- Limited heavy edge computation  
-- Token lifecycle adds complexity  
-
----
-
-### B. Multi‑Region Containerized Delivery (ECS/EKS + ALB)
-**Strengths:**
-- Full control over application logic  
-- Suitable for heavy personalization or compute-intensive DRM  
-
-**Weaknesses:**
-- Containers require careful warm‑up to meet 5‑minute 10× bursts  
-- Higher operating cost and complexity  
-- Still requires CloudFront for global latency targets  
+    A -->|Pros: Best performance & cost| Z["Selected"]
+    B -->|Cons: High ops & warmup issues| Z
+    C -->|Pros: Great for metadata lookup| Z
+    D -->|Cons: Too slow for global p95| Z
+```
 
 ---
 
-### C. DynamoDB Global Tables + API Gateway + Pre‑Signed S3 URLs
-**Strengths:**
-- Ultra‑low‑latency entitlement checks  
-- Ideal for B2B bulk-access scenarios  
-- Excellent scaling and high availability  
+## 5. GenAI-Assisted Operational Enhancements
 
-**Weaknesses:**
-- Still depends on CloudFront for content delivery  
-- Adds metadata lookup hop  
-- Requires cache tuning for hot partitions  
+### GenAI Operational Flow Diagram
+```mermaid
+sequenceDiagram
+    autonumber
+    participant M as Metrics (CloudWatch/CDN)
+    participant G as GenAI Model (Forecasting & Insights)
+    participant EB as EventBridge
+    participant AWS as AWS Services
 
----
-
-### D. Real‑Time DRM Transformation Gateway (On‑the‑fly Encryption/Watermarking)
-**Strengths:**
-- Very strong DRM posture  
-- Per‑request individualized assets  
-
-**Weaknesses:**
-- Expensive under load; misses 200 ms targets  
-- CPU/IO heavy; not suitable for 10× spikes  
-- Best for small subset of high‑value content  
-
----
-
-## 5. GenAI‑Assisted Operational Enhancements
-
-### Predictive Autoscaling
-- Train models on historical traffic, events, release cycles  
-- Pre‑warm Lambda provisioned concurrency  
-- Pre‑scale DynamoDB and adjust CloudFront TTL invalidations
-
-### AI‑Driven Cost/Performance Optimization
-- Daily model-run generates recommendations for:  
-  - Cache behavior adjustments  
-  - Storage tier transitions  
-  - API throttling thresholds  
-- Human-in-the-loop approvals via IaC change sets
-
-### Anomaly Detection for DRM & Access Patterns
-- Detect scraping, token sharing, unusual geolocation spikes  
-- Apply automated mitigations: short TTLs, forced re-auth, rate limit
-
-### Accelerated Modernization
-- Use LLMs to assist with:  
-  - Legacy code refactoring  
-  - Metadata enrichment & tagging  
-  - API shim generation during migration
-
-### GenAI Incident Copilot
-- Converts logs/traces into diagnostics  
-- Suggests mitigation actions  
-- Reduces MTTR
+    M->>G: Provide demand, cost, anomalies
+    G->>EB: Predictive scaling & optimization recommendations
+    EB->>AWS: Adjust scaling, TTL, capacities, warm pools
+    AWS->>M: Updated metrics for next cycle
+```
 
 ---
 
 ## 6. Stakeholder Impact
 
-### Business Stakeholders
-- **Faster time-to-market** for digital content  
-- **SLA compliance** reduces B2B penalty exposure  
-- **Revenue growth** via personalization and reduced friction  
-- **Predictable cloud spend** through AI‑based cost optimization  
-- **Brand enhancement** from improved UX
+### Impact Diagram
+```mermaid
+flowchart TB
+    subgraph Business
+        B1["Faster time‑to‑market"]
+        B2["SLA compliance"]
+        B3["Revenue uplift"]
+        B4["Predictable cloud spend"]
+    end
 
-### Technical Stakeholders
-- Simplified architecture enabling high performance  
-- Strong, auditable DRM with anomaly detection  
-- Reduced operational burden with serverless + AI-runbooks  
-- Resilience through global distribution and replication  
-- Smooth coexistence with legacy systems during transition
+    subgraph Technical
+        T1["Simplified architecture"]
+        T2["Strong DRM posture"]
+        T3["Lower ops overhead"]
+        T4["Global resilience"]
+    end
+
+    B1 --- T1
+    B2 --- T2
+    B3 --- T3
+    B4 --- T4
+```
+
+---
+
+## 7. Final Notes & Next Steps
+- Run performance tests (p95, burst scaling)  
+- Validate DRM enforcement at edge  
+- Enable GenAI pipeline for operations  
+- Prepare production rollout plan  
 
 ---
