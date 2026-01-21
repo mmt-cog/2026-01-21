@@ -2,6 +2,37 @@
 # Boundless Books – Performance-Critical Architecture Decision (AWS)
 *A proposal‑ready architecture decision slice based on the case study.*
 
+- [Boundless Books – Performance-Critical Architecture Decision (AWS)](#boundless-books--performance-critical-architecture-decision-aws)
+  - [1. Performance‑Critical Problem](#1-performancecritical-problem)
+  - [2. Key Non‑Functional Requirements (NFRs)](#2-key-nonfunctional-requirements-nfrs)
+    - [Performance](#performance)
+    - [Availability \& Resilience](#availability--resilience)
+    - [Security \& DRM](#security--drm)
+    - [Cost Efficiency](#cost-efficiency)
+    - [Interoperability](#interoperability)
+    - [Observability](#observability)
+- [Key Architecture Decision (ADR)](#key-architecture-decision-adr)
+  - [ADR‑001:  Consider an architectural pattern for high‑performance content distribution solution](#adr001--consider-an-architectural-pattern-for-highperformance-content-distribution-solution)
+      - [Context](#context)
+    - [Chosen Option (Option 1): Adopt AWS S3 + CloudFront as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata.](#chosen-option-option-1-adopt-aws-s3--cloudfront-as-a-global-secured-content-distribution-layer-with-serverless-entitlement-apis-and-dynamodb-global-tables-for-entitlement-metadata)
+      - [Decision](#decision)
+      - [Status](#status)
+      - [Consequences](#consequences)
+  - [Considered options](#considered-options)
+    - [Option 1. CloudFront + S3 + Serverless Entitlement (Chosen)](#option-1-cloudfront--s3--serverless-entitlement-chosen)
+    - [Option 3. Multi‑Region Containerized Delivery (ECS/EKS + ALB)](#option-3-multiregion-containerized-delivery-ecseks--alb)
+    - [Option 4. DynamoDB Global Tables + API Gateway + Pre‑Signed S3 URLs](#option-4-dynamodb-global-tables--api-gateway--presigned-s3-urls)
+    - [Option 5. Real‑Time DRM Transformation Gateway (On‑the‑fly Encryption/Watermarking)](#option-5-realtime-drm-transformation-gateway-onthefly-encryptionwatermarking)
+  - [GenAI‑Assisted Operational Enhancements](#genaiassisted-operational-enhancements)
+    - [Predictive Autoscaling](#predictive-autoscaling)
+    - [AI‑Driven Cost/Performance Optimization](#aidriven-costperformance-optimization)
+    - [Anomaly Detection for DRM \& Access Patterns](#anomaly-detection-for-drm--access-patterns)
+    - [Accelerated Modernization](#accelerated-modernization)
+    - [GenAI Incident Copilot](#genai-incident-copilot)
+  - [6. Stakeholder Impact](#6-stakeholder-impact)
+    - [Business Stakeholders](#business-stakeholders)
+    - [Technical Stakeholders](#technical-stakeholders)
+
 ---
 
 ## 1. Performance‑Critical Problem
