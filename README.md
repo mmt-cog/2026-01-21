@@ -55,6 +55,39 @@ Key challenge: meeting strict performance constraints:
 #### Context
 Boundless Books needs fast, secure, cost‑controlled delivery of digital assets at global scale. The distribution layer must be independent of legacy systems while supporting modern DRM and AI‑enabled operations.
 
+#### High-Level Architecture
+
+```mermaid
+flowchart LR
+    subgraph Client["Global Users (B2C & B2B)"]
+        A["Web/Mobile/E‑Readers"]
+    end
+
+    A --> CF["CloudFront CDN"]
+    CF --> EDGE["Lambda@Edge / CloudFront Functions<br/>Token Validation, DRM Enforcement"]
+
+    EDGE --> OS["Origin Shield"]
+    OS --> S3["S3 Buckets<br/>(Cross‑Region Replication)"]
+
+    A --> API["API Gateway"]
+    API --> L["Lambda Entitlement Service"]
+    L --> DDB["DynamoDB Global Tables<br/>Entitlements / Metadata"]
+
+    subgraph Observability
+        CW["CloudWatch Metrics & Logs"]
+        XR["X‑Ray Tracing"]
+        CAD["Cost Anomaly Detection"]
+    end
+
+    CF -.-> CW
+    L -.-> CW
+    API -.-> XR
+
+```
+#### Proposed solutions
+
+TO BE DISCUSSED
+
 #### Decision
 - Use **Amazon CloudFront** with **Signed URLs/Cookies**, **Origin Shield**, and **edge functions** for lightweight token validation.  
 - Store digital content in **Amazon S3**, with cross‑Region replication.  
