@@ -48,14 +48,14 @@ Key challenge: meeting strict performance constraints:
 
 ---
 
-## 3. Key Architecture Decision (ADR)
+# Key Architecture Decision (ADR)
 
-### ADR‑001: Adopt AWS S3 + CloudFront as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata.
+## ADR‑001:  Consider an architectural pattern for high‑performance content distribution solution
 
 #### Context
 Boundless Books needs fast, secure, cost‑controlled delivery of digital assets at global scale. The distribution layer must be independent of legacy systems while supporting modern DRM and AI‑enabled operations.
 
-#### High-Level Architecture
+### Option 1: Adopt AWS S3 + CloudFront as a global secured content distribution layer with serverless entitlement APIs and DynamoDB Global Tables for entitlement metadata.
 
 ```mermaid
 flowchart LR
@@ -84,9 +84,6 @@ flowchart LR
     API -.-> XR
 
 ```
-#### Proposed solutions
-
-TO BE DISCUSSED
 
 #### Decision
 - Use **Amazon CloudFront** with **Signed URLs/Cookies**, **Origin Shield**, and **edge functions** for lightweight token validation.  
@@ -113,9 +110,7 @@ TO BE DISCUSSED
 
 ---
 
-## 4. Architectural Alternatives & Trade‑offs
-
-### A. CloudFront + S3 + Serverless Entitlement (Chosen)
+### Option 2. CloudFront + S3 + Serverless Entitlement (Chosen)
 **Strengths:**
 - Best global latency & burst performance  
 - Excellent cache offload  
@@ -128,7 +123,7 @@ TO BE DISCUSSED
 
 ---
 
-### B. Multi‑Region Containerized Delivery (ECS/EKS + ALB)
+### Option 3. Multi‑Region Containerized Delivery (ECS/EKS + ALB)
 **Strengths:**
 - Full control over application logic  
 - Suitable for heavy personalization or compute-intensive DRM  
@@ -140,7 +135,7 @@ TO BE DISCUSSED
 
 ---
 
-### C. DynamoDB Global Tables + API Gateway + Pre‑Signed S3 URLs
+### Option 4. DynamoDB Global Tables + API Gateway + Pre‑Signed S3 URLs
 **Strengths:**
 - Ultra‑low‑latency entitlement checks  
 - Ideal for B2B bulk-access scenarios  
@@ -153,7 +148,7 @@ TO BE DISCUSSED
 
 ---
 
-### D. Real‑Time DRM Transformation Gateway (On‑the‑fly Encryption/Watermarking)
+### Option 5. Real‑Time DRM Transformation Gateway (On‑the‑fly Encryption/Watermarking)
 **Strengths:**
 - Very strong DRM posture  
 - Per‑request individualized assets  
@@ -165,7 +160,7 @@ TO BE DISCUSSED
 
 ---
 
-## 5. GenAI‑Assisted Operational Enhancements
+## GenAI‑Assisted Operational Enhancements
 
 ### Predictive Autoscaling
 - Train models on historical traffic, events, release cycles  
