@@ -29,7 +29,7 @@
     - [Anomaly Detection for DRM \& Access Patterns](#anomaly-detection-for-drm--access-patterns)
     - [Accelerated Modernization](#accelerated-modernization)
     - [GenAI Incident Copilot](#genai-incident-copilot)
-  - [6. Stakeholder Impact](#6-stakeholder-impact)
+  - [Stakeholder Impact](#stakeholder-impact)
     - [Business Stakeholders](#business-stakeholders)
     - [Technical Stakeholders](#technical-stakeholders)
 
@@ -192,47 +192,47 @@ flowchart LR
 
 ---
 
-## GenAI‑Assisted Operational Enhancements
+# GenAI‑Assisted Operational Enhancements
 
-### Predictive Autoscaling
+## Predictive Autoscaling
 - Train models on historical traffic, events, release cycles  
 - Pre‑warm Lambda provisioned concurrency  
 - Pre‑scale DynamoDB and adjust CloudFront TTL invalidations
 
-### AI‑Driven Cost/Performance Optimization
+## AI‑Driven Cost/Performance Optimization
 - Daily model-run generates recommendations for:  
   - Cache behavior adjustments  
   - Storage tier transitions  
   - API throttling thresholds  
 - Human-in-the-loop approvals via IaC change sets
 
-### Anomaly Detection for DRM & Access Patterns
+## Anomaly Detection for DRM & Access Patterns
 - Detect scraping, token sharing, unusual geolocation spikes  
 - Apply automated mitigations: short TTLs, forced re-auth, rate limit
 
-### Accelerated Modernization
+## Accelerated Modernization
 - Use LLMs to assist with:  
   - Legacy code refactoring  
   - Metadata enrichment & tagging  
   - API shim generation during migration
 
-### GenAI Incident Copilot
+## GenAI Incident Copilot
 - Converts logs/traces into diagnostics  
 - Suggests mitigation actions  
 - Reduces MTTR
 
 ---
 
-## 6. Stakeholder Impact
+# Stakeholder Impact
 
-### Business Stakeholders
+## Business Stakeholders
 - **Faster time-to-market** for digital content  
 - **SLA compliance** reduces B2B penalty exposure  
 - **Revenue growth** via personalization and reduced friction  
 - **Predictable cloud spend** through AI‑based cost optimization  
 - **Brand enhancement** from improved UX
 
-### Technical Stakeholders
+## Technical Stakeholders
 - Simplified architecture enabling high performance  
 - Strong, auditable DRM with anomaly detection  
 - Reduced operational burden with serverless + AI-runbooks  
